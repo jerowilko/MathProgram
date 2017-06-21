@@ -23,3 +23,6 @@ Bit Seperator: '
 'not'['and'['in'['x','N']','eq'['s'['x']','0']']']'
 
 'imp'['and'['in'['0','K']','imp'['in'['x','K']','in'['s'['x']','K']']']','eq'['N','K']']'
+
+
+#DJCamBeets IS A FUCKING LEGEND
