@@ -24,11 +24,14 @@ public class Main {
 				
 				Statement st = new Statement(line, bitSeperator);
 				System.out.println(st);
+			
 			}
 			
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		
+		
 	}
 
 }
