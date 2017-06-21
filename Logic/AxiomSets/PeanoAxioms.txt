@@ -1,3 +1,5 @@
+Bit Seperator: '
+
 'in'['0','N']'
 'eq'['x','x']'
 'imp'['eq'['x','y']','eq'['y','x']']'
