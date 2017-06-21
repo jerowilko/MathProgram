@@ -12,21 +12,21 @@ public class Main {
 		try {
 
 			BufferedReader axiomsfile = new BufferedReader(new FileReader("AxiomSets/PeanoAxioms.txt"));
-			
+
 			String bitSeperator = axiomsfile.readLine().split(": ")[1];
-			
-			System.out.println("Bit Seperator: "+bitSeperator);
-			
+
+			System.out.println("Bit Seperator: " + bitSeperator);
+
 			String line;
-			
-			while((line = axiomsfile.readLine()) != null) {
-				if(line.equals("")) continue;
-				
+
+			while ((line = axiomsfile.readLine()) != null) {
+				if (line.equals("") || line.charAt(0)=='#')
+					continue;
+
 				Statement st = new Statement(line, bitSeperator);
 				System.out.println(st);
 			
 			}
-			
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
