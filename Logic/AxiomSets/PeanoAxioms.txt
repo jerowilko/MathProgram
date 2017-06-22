@@ -1,5 +1,8 @@
 Bit Seperator: '
-Variable Handle: @
+Collection Openers: {[
+Collection Closers: }]
+Variable Opener: <@
+Variable Closer: @>
 #Some kind of axiomatic dependancy line needs to be added here. e.g. for peano axioms one needs to have defined the boolean axioms.
 
 
