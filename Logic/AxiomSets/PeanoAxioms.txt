@@ -1,11 +1,13 @@
 Bit Seperator: '
-Variable Tag: @
+Variable Handle: @
 #Some kind of axiomatic dependancy line needs to be added here. e.g. for peano axioms one needs to have defined the boolean axioms.
 
 
 #Comments can be added like this. i.e. lines starting with '#' will be ignored.
 #Blank lines will be ignored.
 #The first line of an axioms file must be "Bit Seperator: <Bit Seperator>".
+
+#bits starting with '<Variable Handle' are treated as variables.
 
 #Axioms hacked together to make below work without underlying boolean axioms
 
