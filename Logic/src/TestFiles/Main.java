@@ -20,8 +20,6 @@ public class Main {
 			String variableOpener = axiomsfile.readLine().split(": ")[1];
 			String variableCloser = axiomsfile.readLine().split(": ")[1];
 
-			System.out.println("Bit Seperator: " + bitSeperator);
-
 			String line;
 
 			PunctuationalContext punct = new PunctuationalContext(bitSeperator, collectionOpeners, collectionClosers, variableOpener, variableCloser);

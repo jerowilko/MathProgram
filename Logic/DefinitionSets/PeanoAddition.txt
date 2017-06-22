@@ -1,0 +1,8 @@
+Bit Seperator: '
+Collection Openers: {[
+Collection Closers: }]
+Variable Opener: <@
+Variable Closer: @>
+
+'imp'['in'['<@x@>','N']','eq'['plus'['<@x@>','0']','<@x@>']']'
+'imp'['and'['in'['<@x@>','N']','in'['<@y@>','N']']','eq'['plus'['<@x@>','s'['<@y@>']']','s'['plus'['<@x@>','<@y@>']']']']'
