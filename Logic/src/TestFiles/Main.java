@@ -14,6 +14,7 @@ public class Main {
 			BufferedReader axiomsfile = new BufferedReader(new FileReader("AxiomSets/PeanoAxioms.txt"));
 
 			String bitSeperator = axiomsfile.readLine().split(": ")[1];
+			String varHandle = axiomsfile.readLine().split(": ")[1];
 
 			System.out.println("Bit Seperator: " + bitSeperator);
 
@@ -23,9 +24,8 @@ public class Main {
 				if (line.equals("") || line.charAt(0)=='#')
 					continue;
 
-				Statement st = new Statement(line, bitSeperator);
+				Statement st = new Statement(line, bitSeperator, varHandle);
 				System.out.println(st);
-			
 			}
 		} catch (IOException e) {
 			e.printStackTrace();

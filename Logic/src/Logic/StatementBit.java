@@ -12,4 +12,8 @@ public class StatementBit {
 		return literalValue;
 	}
 
+	public boolean isVariable() {
+		return this instanceof Variable;
+	}
+	
 }

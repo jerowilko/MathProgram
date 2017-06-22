@@ -1,4 +1,5 @@
 Bit Seperator: '
+Variable Tag: @
 #Some kind of axiomatic dependancy line needs to be added here. e.g. for peano axioms one needs to have defined the boolean axioms.
 
 
@@ -8,23 +9,18 @@ Bit Seperator: '
 
 #Axioms hacked together to make below work without underlying boolean axioms
 
-'r'['imp'['x','y']','r'['x','y']']'
+'r'['imp'['<@x@>','<@y@>']','r'['<@x@>','<@y@>']']'
 
 #Peano Axioms
 
 'in'['0','N']'
-'eq'['x','x']'
-'imp'['eq'['x','y']','eq'['y','x']']'
-'imp'['and'['eq'['x','y']','eq'['y','z']']','eq'['x','z']']'
-'imp'['and'['eq'['x','y']','in'['x','N']']','in'['y','N']']'
+'eq'['<@x@>','<@x@>']'
+'imp'['eq'['<@x@>','<@y@>']','eq'['<@y@>','<@x@>']']'
+'imp'['and'['eq'['<@x@>','<@y@>']','eq'['<@y@>','<@z@>']']','eq'['<@x@>','<@z@>']']'
+'imp'['and'['eq'['<@x@>','<@y@>']','in'['<@x@>','N']']','in'['<@y@>','N']']'
 
-'imp'['in'['x','N']','in'['s'['x']','N']']'
-'imp['eq'['s'['x']','s'['y']']','eq'['x','y']']'
-'not'['and'['in'['x','N']','eq'['s'['x']','0']']']'
+'imp'['in'['<@x@>','N']','in'['s'['<@x@>']','N']']'
+'imp['eq'['s'['<@x@>']','s'['<@y@>']']','eq'['<@x@>','<@y@>']']'
+'not'['and'['in'['<@x@>','N']','eq'['s'['<@x@>']','0']']']'
 
-'imp'['and'['in'['0','K']','imp'['in'['x','K']','in'['s'['x']','K']']']','eq'['N','K']']'
-
-# Merging test
-
-#DJCamBeets IS A FUCKING LEGEND
-#BeetsByBeetar
+'imp'['and'['in'['0','<@K@>']','imp'['in'['<@x@>','<@K@>']','in'['s'['<@x@>']','<@K@>']']']','eq'['N','<@K@>']']'
