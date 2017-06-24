@@ -55,7 +55,7 @@ public class PunctuationalContext {
 		String[] strBits = this.splitBits(initialisationString);
 		ArrayList<StatementBit> sequence = new ArrayList<StatementBit>(strBits.length-2);
 		
-		for(int i=1;i<strBits.length-1;i++) {
+		for(int i=1;i<strBits.length;i++) {
 			sequence.add(this.parseBit(strBits[i]));
 		}
 		
@@ -77,6 +77,50 @@ public class PunctuationalContext {
 		}
 		
 		return str + this.bitSeperator;
+	}
+	
+	public boolean isCollectionOpener(StatementBit bit) {
+		if(bit.isVariable()) return false;
+		
+		return this.collectionOpeners.contains(bit.literalValue);
+	}
+	
+	public boolean isCollectionCloser(StatementBit bit) {
+		if(bit.isVariable()) return false;
+		
+		return this.collectionClosers.contains(bit.literalValue);
+	}
+
+	public Statement getUnit(Statement statement, int startIndex) {
+		ArrayList<StatementBit> newSequence = new ArrayList<StatementBit>();
+		StatementBit startBit = statement.Sequence.get(startIndex);
+		
+		if(this.isCollectionCloser(startBit)) return null;
+		
+		if(!this.isCollectionOpener(startBit)) {
+			newSequence.add(startBit);
+			return new Statement(newSequence, statement.variableAssignments, this);
+		}
+		
+		int[] levels = new int[this.collectionOpeners.size()];
+		levels[this.collectionOpeners.indexOf(startBit.literalValue)] += 1;
+		newSequence.add(startBit);
+		
+		int i = startIndex + 1;
+		while(UsefulFuncs.arraySum(levels)>0) {
+			StatementBit bit = statement.Sequence.get(i);
+			newSequence.add(bit);
+			
+			if(this.isCollectionOpener(bit)) {
+				levels[this.collectionOpeners.indexOf(bit.literalValue)] += 1;
+			} else if(this.isCollectionCloser(bit)) {
+				levels[this.collectionClosers.indexOf(bit.literalValue)] -= 1;
+			}
+			
+			i++;
+		}
+		
+		return new Statement(newSequence, statement.variableAssignments, this);
 	}
 	
 }
