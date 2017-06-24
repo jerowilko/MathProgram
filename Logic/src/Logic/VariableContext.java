@@ -35,7 +35,6 @@ public class VariableContext {
 			Map.Entry pair = (Map.Entry)it.next();
 	        str += pair.getKey() + " = " + pair.getValue();
 			if(it.hasNext()) str += "\n";
-	        it.remove();
 		}
 		
 		return str;

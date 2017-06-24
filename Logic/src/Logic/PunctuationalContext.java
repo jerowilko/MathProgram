@@ -1,6 +1,8 @@
 package Logic;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class PunctuationalContext {
 
@@ -42,10 +44,13 @@ public class PunctuationalContext {
 		return startsWithOpener && endsWithCloser;
 	}
 
-	public StatementBit parseBit(String strBit) {
+	public StatementBit parseBit(String strBit, Map<String, Variable> variables) {
 		if (isVariableBit(strBit)) {
-			return new Variable(
-					strBit.substring(this.variableOpener.length(), strBit.length() - this.variableCloser.length()));
+			if (!variables.containsKey(strBit))
+				variables.put(strBit, new Variable(strBit.substring(this.variableOpener.length(),
+						strBit.length() - this.variableCloser.length())));
+
+			return variables.get(strBit);
 		} else {
 			return new StatementBit(strBit);
 		}
@@ -53,21 +58,23 @@ public class PunctuationalContext {
 
 	public ArrayList<StatementBit> getSequence(String initialisationString) {
 		String[] strBits = this.splitBits(initialisationString);
-		ArrayList<StatementBit> sequence = new ArrayList<StatementBit>(strBits.length-2);
-		
-		for(int i=1;i<strBits.length;i++) {
-			sequence.add(this.parseBit(strBits[i]));
+		ArrayList<StatementBit> sequence = new ArrayList<StatementBit>(strBits.length - 2);
+
+		Map<String, Variable> variables = new HashMap<String, Variable>();
+
+		for (int i = 1; i < strBits.length; i++) {
+			sequence.add(this.parseBit(strBits[i], variables));
 		}
-		
+
 		return sequence;
 	}
 
 	public String joinSequence(ArrayList<StatementBit> sequence) {
 		String str = "";
-		
-		for(int i=0;i<sequence.size();i++){
-			str+=this.bitSeperator;
-			if(sequence.get(i).isVariable()) {
+
+		for (int i = 0; i < sequence.size(); i++) {
+			str += this.bitSeperator;
+			if (sequence.get(i).isVariable()) {
 				str += this.variableOpener;
 				str += sequence.get(i);
 				str += this.variableCloser;
@@ -75,52 +82,55 @@ public class PunctuationalContext {
 				str += sequence.get(i);
 			}
 		}
-		
+
 		return str + this.bitSeperator;
 	}
-	
+
 	public boolean isCollectionOpener(StatementBit bit) {
-		if(bit.isVariable()) return false;
-		
+		if (bit.isVariable())
+			return false;
+
 		return this.collectionOpeners.contains(bit.literalValue);
 	}
-	
+
 	public boolean isCollectionCloser(StatementBit bit) {
-		if(bit.isVariable()) return false;
-		
+		if (bit.isVariable())
+			return false;
+
 		return this.collectionClosers.contains(bit.literalValue);
 	}
 
 	public Statement getUnit(Statement statement, int startIndex) {
 		ArrayList<StatementBit> newSequence = new ArrayList<StatementBit>();
 		StatementBit startBit = statement.Sequence.get(startIndex);
-		
-		if(this.isCollectionCloser(startBit)) return null;
-		
-		if(!this.isCollectionOpener(startBit)) {
+
+		if (this.isCollectionCloser(startBit))
+			return null;
+
+		if (!this.isCollectionOpener(startBit)) {
 			newSequence.add(startBit);
 			return new Statement(newSequence, statement.variableAssignments, this);
 		}
-		
+
 		int[] levels = new int[this.collectionOpeners.size()];
 		levels[this.collectionOpeners.indexOf(startBit.literalValue)] += 1;
 		newSequence.add(startBit);
-		
+
 		int i = startIndex + 1;
-		while(UsefulFuncs.arraySum(levels)>0) {
+		while (UsefulFuncs.arraySum(levels) > 0) {
 			StatementBit bit = statement.Sequence.get(i);
 			newSequence.add(bit);
-			
-			if(this.isCollectionOpener(bit)) {
+
+			if (this.isCollectionOpener(bit)) {
 				levels[this.collectionOpeners.indexOf(bit.literalValue)] += 1;
-			} else if(this.isCollectionCloser(bit)) {
+			} else if (this.isCollectionCloser(bit)) {
 				levels[this.collectionClosers.indexOf(bit.literalValue)] -= 1;
 			}
-			
+
 			i++;
 		}
-		
+
 		return new Statement(newSequence, statement.variableAssignments, this);
 	}
-	
+
 }

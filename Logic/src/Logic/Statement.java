@@ -44,7 +44,17 @@ public class Statement {
 	public Statement getUnit(int startIndex) {
 		return this.punctuation.getUnit(this, startIndex);
 	}
+	
+	public Statement getLHS() {
+		if(!this.isReplacementStatement()) return null;
+		return this.getUnit(3);
+	}
 
+	public Statement getRHS() {
+		if(!this.isReplacementStatement()) return null;
+		return this.getUnit(3+this.getLHS().size()+1);
+	}
+	
 	public boolean isReplacementStatement() {
 		if (!(this.Sequence.get(1).literalValue.equals("r") && this.Sequence.get(2).literalValue.equals("[")))
 			return false;
@@ -72,7 +82,6 @@ public class Statement {
 	}
 	
 	public boolean fitsSignature(Statement st, VariableContext vc) {
-		
 		if(this.size()==1) {
 			if(this.Sequence.get(0).isVariable()) {
 				if(vc.isSet((Variable) this.Sequence.get(0))) {
@@ -110,6 +119,64 @@ public class Statement {
 		}
 		
 		return true;
+	}
+	
+	public ArrayList<Integer> getApplicableIndices(Statement st) {
+		if(!this.isReplacementStatement()) return null;
+		
+		Statement LHS = this.getLHS();
+		
+		ArrayList<Integer> indices = new ArrayList<Integer>();
+		
+		for(int i=0;i<st.Sequence.size();i++) {
+			Statement unit = st.getUnit(i);
+			if(unit!=null && LHS.fitsSignature(unit)) indices.add(i);
+		}
+		
+		return indices;
+	}
+	
+	public boolean isApplicableTo(Statement unit, VariableContext vc) {
+		Statement LHS = this.getLHS();
+		return LHS.fitsSignature(unit, vc);
+	}
+	
+	public boolean isApplicableTo(Statement unit) {
+		return this.isApplicableTo(unit, new VariableContext());
+	}
+	
+	public Statement applyTo(Statement st, int unitIndex) {
+		VariableContext vc = new VariableContext();
+		Statement unit = st.getUnit(unitIndex);
+		
+		if(!this.isApplicableTo(unit, vc)) return null;
+		
+		Statement newUnit = this.getRHS().substitute(vc);
+	
+		ArrayList<StatementBit> newSequence = new ArrayList<StatementBit>();
+		
+		newSequence.addAll(st.Sequence.subList(0, unitIndex));
+		newSequence.addAll(newUnit.Sequence);
+		newSequence.addAll(st.Sequence.subList(unitIndex + unit.size(), st.size()));
+		
+		return new Statement(newSequence, st.variableAssignments, st.punctuation);
+	}
+
+	public Statement substitute(VariableContext vc) {
+		ArrayList<StatementBit> newSequence = new ArrayList<StatementBit>();
+		
+		for(int i=0;i<this.size();i++) {
+			if(!this.Sequence.get(i).isVariable()) newSequence.add(this.Sequence.get(i));
+			else {
+				if(vc.isSet((Variable) this.Sequence.get(i))) {
+					newSequence.addAll(vc.getValue((Variable) this.Sequence.get(i)).Sequence);
+				} else {
+					newSequence.add(this.Sequence.get(i));
+				}
+			}
+		}
+				
+		return new Statement(newSequence, this.variableAssignments, this.punctuation);
 	}
 
 }
