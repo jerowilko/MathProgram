@@ -7,6 +7,7 @@ public class Statement {
 	ArrayList<StatementBit> Sequence;
 	PunctuationalContext punctuation;
 	VariableContext variableAssignments;
+	ArrayList<StatementApplicationRecord> derrivation = new ArrayList<StatementApplicationRecord>();
 
 	public Statement(String initialisationString, PunctuationalContext punct) {
 		this(punct.getSequence(initialisationString), new VariableContext(), punct);
@@ -159,7 +160,13 @@ public class Statement {
 		newSequence.addAll(newUnit.Sequence);
 		newSequence.addAll(st.Sequence.subList(unitIndex + unit.size(), st.size()));
 		
-		return new Statement(newSequence, st.variableAssignments, st.punctuation);
+		Statement theorem = new Statement(newSequence, st.variableAssignments, st.punctuation);
+		
+		theorem.derrivation.addAll(this.derrivation);
+		theorem.derrivation.addAll(st.derrivation);
+		theorem.derrivation.add(new StatementApplicationRecord(this, st, theorem, unitIndex));
+		
+		return theorem;
 	}
 
 	public Statement substitute(VariableContext vc) {
