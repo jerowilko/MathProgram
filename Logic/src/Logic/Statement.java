@@ -4,10 +4,10 @@ import java.util.ArrayList;
 
 public class Statement {
 
-	ArrayList<StatementBit> Sequence;
-	PunctuationalContext punctuation;
-	VariableContext variableAssignments;
-	ArrayList<StatementApplicationRecord> derrivation = new ArrayList<StatementApplicationRecord>();
+	public ArrayList<StatementBit> Sequence;
+	public PunctuationalContext punctuation;
+	public VariableContext variableAssignments;
+	public ArrayList<StatementApplicationRecord> derrivation = new ArrayList<StatementApplicationRecord>();
 
 	public Statement(String initialisationString, PunctuationalContext punct) {
 		this(punct.getSequence(initialisationString), new VariableContext(), punct);
