@@ -11,8 +11,6 @@ public class Main {
 		as.importAxioms("AxiomSets/TestAxioms.txt");
 		as.importDefinitions("DefinitionSets/PeanoAddition.txt");
 		
-		
-		
 		System.out.println(as);
 		
 	}

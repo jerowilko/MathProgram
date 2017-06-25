@@ -133,4 +133,23 @@ public class PunctuationalContext {
 		return new Statement(newSequence, statement.variableAssignments, this);
 	}
 
+	public String getExportString() {
+		String str = "Bit Seperator: "+this.bitSeperator;
+		
+		str += "\nCollection Openers: ";
+		for(int i=0;i<this.collectionOpeners.size();i++) {
+			str += this.collectionOpeners.get(i);
+		}
+		
+		str += "\nCollection Closers: ";
+		for(int i=0;i<this.collectionClosers.size();i++) {
+			str += this.collectionClosers.get(i);
+		}
+		
+		str += "\nVariable Opener: "+this.variableOpener;
+		str += "\nVariable Closer: "+this.variableCloser;
+		
+		return str;
+	}
+
 }

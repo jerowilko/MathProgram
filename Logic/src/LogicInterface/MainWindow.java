@@ -45,6 +45,8 @@ public class MainWindow implements ActionListener, ListSelectionListener {
 	private JTextPane resultArea;
 	private JButton addTheorem;
 	private JButton toggleDebugBtn;
+	private JButton btnLoadState;
+	private JButton btnSaveState;
 	
 	/**
 	 * Launch the application.
@@ -123,6 +125,7 @@ public class MainWindow implements ActionListener, ListSelectionListener {
 		frame.getContentPane().add(lblAtPosition);
 		
 		resultArea = new JTextPane();
+		resultArea.setEditable(false);
 		resultArea.setBounds(10, 777, 1474, 42);
 		frame.getContentPane().add(resultArea);
 		SimpleAttributeSet attribs = new SimpleAttributeSet();  
@@ -143,6 +146,16 @@ public class MainWindow implements ActionListener, ListSelectionListener {
 		toggleDebugBtn.addActionListener(this);
 		toggleDebugBtn.setBounds(10, 745, 150, 23);
 		frame.getContentPane().add(toggleDebugBtn);
+		
+		btnLoadState = new JButton("Load State");
+		btnLoadState.addActionListener(this);
+		btnLoadState.setBounds(641, 11, 105, 23);
+		frame.getContentPane().add(btnLoadState);
+		
+		btnSaveState = new JButton("Save State");
+		btnSaveState.addActionListener(this);
+		btnSaveState.setBounds(749, 11, 105, 23);
+		frame.getContentPane().add(btnSaveState);
 	}
 	
 	public void importAxioms(String filname) {
@@ -217,13 +230,25 @@ public class MainWindow implements ActionListener, ListSelectionListener {
 	}
 	
 	public void showResult() {
-		this.resultArea.setText(this.resultingStatement.toString());
+		this.resultArea.setText("");
+		
+		if(this.resultingStatement!=null) this.resultArea.setText(this.resultingStatement.toString());
+	}
+	
+	public void importState(String filname) {
+		this.as.importState(filname);
+	
+		this.refreshStatements();
+	}
+	
+	public void exportState(String filname) {
+		this.as.exportState(filname);
 	}
 	
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource()==this.btnImportAxioms) {
-			final JFileChooser fc = new JFileChooser();
+			JFileChooser fc = new JFileChooser();
 			int returnVal = fc.showOpenDialog(null);
 			
 			if (returnVal == JFileChooser.APPROVE_OPTION) {
@@ -232,7 +257,7 @@ public class MainWindow implements ActionListener, ListSelectionListener {
 		}
 		
 		if(e.getSource()==this.btnImportDefinitions) {
-			final JFileChooser fc = new JFileChooser();
+			JFileChooser fc = new JFileChooser();
 			int returnVal = fc.showOpenDialog(null);
 			
 			if (returnVal == JFileChooser.APPROVE_OPTION) {
@@ -261,6 +286,28 @@ public class MainWindow implements ActionListener, ListSelectionListener {
 			GlobalConstants.debugMode = !GlobalConstants.debugMode;
 			this.refreshStatements();
 			this.showResult();
+		}
+		
+		if(e.getSource()==this.btnLoadState) {
+			this.as = new AxiomSystem();
+			this.refreshStatements();
+			this.showResult();
+			
+			JFileChooser fc = new JFileChooser();
+			int returnVal = fc.showOpenDialog(null);
+			
+			if (returnVal == JFileChooser.APPROVE_OPTION) {
+				this.importState(fc.getSelectedFile().getAbsolutePath());
+			}
+		}
+		
+		if(e.getSource()==this.btnSaveState) {
+			JFileChooser fc = new JFileChooser();
+			int returnVal = fc.showSaveDialog(null);
+			
+			if (returnVal == JFileChooser.APPROVE_OPTION) {
+				this.exportState(fc.getSelectedFile().getAbsolutePath());
+			}
 		}
 	}
 

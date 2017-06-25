@@ -1,8 +1,14 @@
 package Logic;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
+import java.io.Writer;
 import java.util.ArrayList;
 
 public class AxiomSystem {
@@ -10,12 +16,16 @@ public class AxiomSystem {
 	public ArrayList<Statement> axioms = new ArrayList<Statement>();
 	public ArrayList<Statement> definitions = new ArrayList<Statement>();
 	public ArrayList<Statement> theorems = new ArrayList<Statement>();
+	
+	public PunctuationalContext punct;
 
 	public void readStatementFileIntoArr(String filname, ArrayList<Statement> arr) {
 		try {
 			BufferedReader stmtfile = new BufferedReader(new FileReader(filname));
 
 			PunctuationalContext punct = getPunctuationContext(stmtfile);
+			
+			this.punct = punct;
 
 			String line;
 			while ((line = stmtfile.readLine()) != null) {
@@ -106,6 +116,72 @@ public class AxiomSystem {
 
 	public void addTheorem(Statement theorem) {
 		this.theorems.add(theorem);
+	}
+
+	public void exportState(String filname) {
+		Writer writer;
+		try {
+			writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(filname), "utf-8"));
+		
+			writer.write(this.punct.getExportString());
+			
+			writer.write("\nAxioms:");
+			for(int i=0;i<this.axioms.size();i++) {
+				writer.write("\n"+this.axioms.get(i).literalJoinSequence());
+			}
+			
+			writer.write("\nDefinitions:");
+			for(int i=0;i<this.definitions.size();i++) {
+				writer.write("\n"+this.definitions.get(i).literalJoinSequence());
+			}
+			
+			writer.write("\nTheorems:");
+			for(int i=0;i<this.theorems.size();i++) {
+				writer.write("\n"+this.theorems.get(i).literalJoinSequence());
+			}
+		
+			writer.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void importState(String filname) {
+		try {
+			BufferedReader statefile = new BufferedReader(new FileReader(filname));
+			
+			PunctuationalContext punct = this.getPunctuationContext(statefile);
+			
+			String line;
+			
+			line = statefile.readLine();
+			
+			while (!(line = statefile.readLine()).equals("Definitions:")) {
+				if (line.equals("") || line.charAt(0) == '#')
+					continue;
+
+				Statement st = new Statement(line, punct);
+				this.axioms.add(st);
+			}
+			
+			while (!(line = statefile.readLine()).equals("Theorems:")) {
+				if (line.equals("") || line.charAt(0) == '#')
+					continue;
+
+				Statement st = new Statement(line, punct);
+				this.definitions.add(st);
+			}
+			
+			while ((line = statefile.readLine()) != null) {
+				if (line.equals("") || line.charAt(0) == '#')
+					continue;
+
+				Statement st = new Statement(line, punct);
+				this.theorems.add(st);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 }

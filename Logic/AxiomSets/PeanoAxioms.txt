@@ -16,10 +16,10 @@ Variable Closer: @>
 
 'r'['imp'['<@x@>','<@y@>']','r'['<@x@>','<@y@>']']'
 
-#Peano Axioms
+#Peano Axioms NOT COMPLETE AT ALL JUST A SKELETON!
 
 'in'['0','N']'
-'eq'['<@x@>','<@x@>']'
+'imp'['in'['x','N']','eq'['<@x@>','<@x@>']']
 'imp'['eq'['<@x@>','<@y@>']','eq'['<@y@>','<@x@>']']'
 'imp'['and'['eq'['<@x@>','<@y@>']','eq'['<@y@>','<@z@>']']','eq'['<@x@>','<@z@>']']'
 'imp'['and'['eq'['<@x@>','<@y@>']','in'['<@x@>','N']']','in'['<@y@>','N']']'
