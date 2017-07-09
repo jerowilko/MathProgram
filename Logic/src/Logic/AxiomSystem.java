@@ -19,6 +19,15 @@ public class AxiomSystem {
 	
 	public PunctuationalContext punct;
 
+	public AxiomSystem() {
+		
+	}
+	
+	public AxiomSystem(ArrayList<Statement> statements, PunctuationalContext punct) {
+		this.punct = punct;
+		this.axioms = new ArrayList<Statement>(statements);
+	}
+	
 	public void readStatementFileIntoArr(String filname, ArrayList<Statement> arr) {
 		try {
 			BufferedReader stmtfile = new BufferedReader(new FileReader(filname));
@@ -41,15 +50,7 @@ public class AxiomSystem {
 	}
 
 	public PunctuationalContext getPunctuationContext(BufferedReader stmtfile) throws IOException {
-		String bitSeperator = stmtfile.readLine().split(": ")[1];
-		String collectionOpeners = stmtfile.readLine().split(": ")[1];
-		String collectionClosers = stmtfile.readLine().split(": ")[1];
-		String variableOpener = stmtfile.readLine().split(": ")[1];
-		String variableCloser = stmtfile.readLine().split(": ")[1];
-
-		PunctuationalContext punct = new PunctuationalContext(bitSeperator, collectionOpeners, collectionClosers,
-				variableOpener, variableCloser);
-		return punct;
+		return new PunctuationalContext(stmtfile);
 	}
 
 	public void importAxioms(String filname) {
@@ -114,6 +115,22 @@ public class AxiomSystem {
 		return str;
 	}
 
+	public void addAxiom(String stmt) {
+		this.addAxiom(new Statement(stmt, this.punct));
+	}
+	
+	public void addAxiom(Statement axiom) {
+		this.axioms.add(axiom);
+	}
+	
+	public void addDefinition(String stmt) {
+		this.addDefinition(new Statement(stmt, this.punct));
+	}
+	
+	public void addDefinition(Statement definition) {
+		this.definitions.add(definition);
+	}
+	
 	public void addTheorem(Statement theorem) {
 		this.theorems.add(theorem);
 	}
@@ -150,7 +167,7 @@ public class AxiomSystem {
 		try {
 			BufferedReader statefile = new BufferedReader(new FileReader(filname));
 			
-			PunctuationalContext punct = this.getPunctuationContext(statefile);
+			this.punct = this.getPunctuationContext(statefile);
 			
 			String line;
 			
@@ -182,6 +199,16 @@ public class AxiomSystem {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	public void importPunctuation(String filname) {
+
+		try {
+			this.punct = this.getPunctuationContext(new BufferedReader(new FileReader(filname)));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
 	}
 
 }

@@ -1,5 +1,7 @@
 package Logic;
 
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -11,9 +13,30 @@ public class PunctuationalContext {
 	ArrayList<String> collectionClosers;
 	String variableOpener;
 	String variableCloser;
+	String replacementFunctionBit;
+	String replacementFunctionOpener;
+	String replacementFunctionSeperator;
+	String replacementFunctionCloser;
 
-	public PunctuationalContext(String bitSeperator, String collectionOpeners, String collectionClosers,
-			String variableOpener, String variableCloser) {
+	public PunctuationalContext(BufferedReader br) throws IOException {
+		final String bitSeperator = br.readLine().split(": ")[1];
+		final String collectionOpeners = br.readLine().split(": ")[1];
+		final String collectionClosers = br.readLine().split(": ")[1];
+		final String variableOpener = br.readLine().split(": ")[1];
+		final String variableCloser = br.readLine().split(": ")[1];
+		final String replacementFunctionBit = br.readLine().split(": ")[1];
+		final String replacementFunctionOpener = br.readLine().split(": ")[1];
+		final String replacementFunctionSeperator = br.readLine().split(": ")[1];
+		final String replacementFunctionCloser = br.readLine().split(": ")[1];
+
+		this.setValues(bitSeperator, collectionOpeners, collectionClosers, variableOpener, variableCloser,
+				replacementFunctionBit, replacementFunctionOpener, replacementFunctionSeperator,
+				replacementFunctionCloser);
+	}
+
+	public void setValues(String bitSeperator, String collectionOpeners, String collectionClosers,
+			String variableOpener, String variableCloser, String replacementFunctionBit,
+			String replacementFunctionOpener, String replacementFunctionSeperator, String replacementFunctionCloser) {
 		this.bitSeperator = bitSeperator;
 		this.variableOpener = variableOpener;
 		this.variableCloser = variableCloser;
@@ -26,6 +49,16 @@ public class PunctuationalContext {
 			this.collectionClosers.add(collectionClosers.charAt(i) + "");
 		}
 
+		this.replacementFunctionBit = replacementFunctionBit;
+		this.replacementFunctionOpener = replacementFunctionOpener;
+		this.replacementFunctionSeperator = replacementFunctionSeperator;
+		this.replacementFunctionCloser = replacementFunctionCloser;
+
+		if (!(this.collectionOpeners.contains(this.replacementFunctionOpener)
+				|| this.collectionClosers.contains(this.replacementFunctionCloser))) {
+			System.out
+					.println("WARNING YOUR REPLACEMENT OPENERS AND/OR CLOSERS ARE NOT REGISTERED AS OPENERS/CLOSERS!");
+		}
 	}
 
 	public String[] splitBits(String str) {
@@ -134,21 +167,25 @@ public class PunctuationalContext {
 	}
 
 	public String getExportString() {
-		String str = "Bit Seperator: "+this.bitSeperator;
-		
+		String str = "Bit Seperator: " + this.bitSeperator;
+
 		str += "\nCollection Openers: ";
-		for(int i=0;i<this.collectionOpeners.size();i++) {
+		for (int i = 0; i < this.collectionOpeners.size(); i++) {
 			str += this.collectionOpeners.get(i);
 		}
-		
+
 		str += "\nCollection Closers: ";
-		for(int i=0;i<this.collectionClosers.size();i++) {
+		for (int i = 0; i < this.collectionClosers.size(); i++) {
 			str += this.collectionClosers.get(i);
 		}
-		
-		str += "\nVariable Opener: "+this.variableOpener;
-		str += "\nVariable Closer: "+this.variableCloser;
-		
+
+		str += "\nVariable Opener: " + this.variableOpener;
+		str += "\nVariable Closer: " + this.variableCloser;
+		str += "\nReplacement Function Bit: " + this.replacementFunctionBit;
+		str += "\nReplacement Function Opener: " + this.replacementFunctionOpener;
+		str += "\nReplacement Function Seperator: " + this.replacementFunctionSeperator;
+		str += "\nReplacement Function Closer: " + this.replacementFunctionCloser;
+
 		return str;
 	}
 
