@@ -16,6 +16,7 @@ public class AxiomSystem {
 	public ArrayList<Statement> axioms = new ArrayList<Statement>();
 	public ArrayList<Statement> definitions = new ArrayList<Statement>();
 	public ArrayList<Statement> theorems = new ArrayList<Statement>();
+	public ArrayList<Statement> importantResults = new ArrayList<Statement>();
 	
 	public PunctuationalContext punct;
 
@@ -134,7 +135,27 @@ public class AxiomSystem {
 	public void addTheorem(Statement theorem) {
 		this.theorems.add(theorem);
 	}
+	
+	public void addImportantResult(Statement st) {
+		this.importantResults.add(st);
+	}
+	
+	public void removeAxiom(Statement st) {
+		this.axioms.remove(st);
+	}
 
+	public void removeDefinition(Statement st) {
+		this.definitions.remove(st);
+	}
+	
+	public void removeTheorem(Statement st) {
+		this.theorems.remove(st);
+	}
+	
+	public void removeImportantResult(Statement st) {
+		this.importantResults.remove(st);
+	}
+	
 	public void exportState(String filname) {
 		Writer writer;
 		try {
@@ -155,6 +176,11 @@ public class AxiomSystem {
 			writer.write("\nTheorems:");
 			for(int i=0;i<this.theorems.size();i++) {
 				writer.write("\n"+this.theorems.get(i).literalJoinSequence());
+			}
+			
+			writer.write("\nImportant Results:");
+			for(int i=0;i<this.importantResults.size();i++) {
+				writer.write("\n"+this.importantResults.get(i).literalJoinSequence());
 			}
 		
 			writer.close();
@@ -189,12 +215,20 @@ public class AxiomSystem {
 				this.definitions.add(st);
 			}
 			
-			while ((line = statefile.readLine()) != null) {
+			while (!(line = statefile.readLine()).equals("Important Results:")) {
 				if (line.equals("") || line.charAt(0) == '#')
 					continue;
 
 				Statement st = new Statement(line, punct);
 				this.theorems.add(st);
+			}
+			
+			while ((line = statefile.readLine()) != null) {
+				if (line.equals("") || line.charAt(0) == '#')
+					continue;
+
+				Statement st = new Statement(line, punct);
+				this.importantResults.add(st);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

@@ -102,10 +102,21 @@ public class Statement {
 	}
 
 	public boolean fitsSignature(Statement st, VariableContext vc) {
+		//System.out.println(this + " : " + st);
+		//System.out.println(vc);
+		
 		if (this.size() == 1) {
 			if (this.Sequence.get(0).isVariable()) {
 				if (vc.isSet((Variable) this.Sequence.get(0))) {
-					return vc.getValue((Variable) this.Sequence.get(0)).fitsSignature(st, vc);
+					Statement Value = vc.getValue((Variable) this.Sequence.get(0));
+					
+					if(Value.size()==1 && Value.Sequence.get(0).isVariable()) {
+						if(st.size()!=1) return false;
+						
+						return java.lang.System.identityHashCode(Value.Sequence.get(0)) == java.lang.System.identityHashCode(st.Sequence.get(0));
+					}
+					
+					return Value.fitsSignature(st, vc);
 				} else {
 					vc.setVariable((Variable) this.Sequence.get(0), st);
 					return true;

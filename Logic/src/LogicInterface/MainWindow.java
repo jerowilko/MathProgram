@@ -25,10 +25,14 @@ import Logic.AxiomSystem;
 import Logic.GlobalConstants;
 import Logic.PunctuationalContext;
 import Logic.Statement;
+import java.awt.event.WindowFocusListener;
+import java.awt.event.WindowListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowAdapter;
 
-public class MainWindow implements ActionListener, ListSelectionListener {
+public class MainWindow implements ActionListener, ListSelectionListener, WindowFocusListener, WindowListener {
 
-	private JFrame frame;
+	private JFrame frmMainWindow;
 	private JButton btnImportDefinitions;
 	private JButton btnImportAxioms;
 	private JLabel lblTo;
@@ -41,6 +45,7 @@ public class MainWindow implements ActionListener, ListSelectionListener {
 	DefaultListModel<Statement> axiomListModel = new DefaultListModel<Statement>();
 	public ArrayList<applyButton> applyButtons = new ArrayList<applyButton>();
 	public Statement resultingStatement = null;
+	public TheoremsWindow importantResultsWindow;
 
 	private JPanel positionSelectorPane;
 	private JTextPane resultArea;
@@ -60,6 +65,7 @@ public class MainWindow implements ActionListener, ListSelectionListener {
 	private JScrollPane positionScrollPane;
 	private JScrollPane scrollPane;
 	private JScrollPane scrollPane_2;
+	private JButton btnAddImportantResult;
 
 	/**
 	 * Launch the application.
@@ -69,7 +75,7 @@ public class MainWindow implements ActionListener, ListSelectionListener {
 			public void run() {
 				try {
 					MainWindow window = new MainWindow();
-					window.frame.setVisible(true);
+					window.frmMainWindow.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -82,10 +88,15 @@ public class MainWindow implements ActionListener, ListSelectionListener {
 	 */
 	public MainWindow() {
 		initialize();
+		
+		this.importantResultsWindow = new TheoremsWindow(this);
+		this.importantResultsWindow.setVisible(true);;
 	}
 
 	public MainWindow(ArrayList<Statement> axioms, PunctuationalContext punct) {
 		this();
+		
+		frmMainWindow.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 
 		this.as = new AxiomSystem(axioms, punct);
 		this.refreshStatements();
@@ -95,17 +106,20 @@ public class MainWindow implements ActionListener, ListSelectionListener {
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
-		frame = new JFrame();
-		frame.setResizable(false);
-		frame.setBounds(100, 100, 1500, 1000);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.getContentPane().setLayout(null);
-		frame.setLocation(5, 5);
+		frmMainWindow = new JFrame();
+		frmMainWindow.addWindowListener(this);
+		frmMainWindow.addWindowFocusListener(this);
+		frmMainWindow.setTitle("Main Window");
+		frmMainWindow.setResizable(false);
+		frmMainWindow.setBounds(100, 100, 1500, 1000);
+		frmMainWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frmMainWindow.getContentPane().setLayout(null);
+		frmMainWindow.setLocation(5, 5);
 
 		splitPane = new JSplitPane();
 		splitPane.setResizeWeight(0.5);
 		splitPane.setBounds(10, 56, 1474, 581);
-		frame.getContentPane().add(splitPane);
+		frmMainWindow.getContentPane().add(splitPane);
 		
 		scrollPane = new JScrollPane();
 		splitPane.setLeftComponent(scrollPane);
@@ -123,37 +137,37 @@ public class MainWindow implements ActionListener, ListSelectionListener {
 
 		lblApply = new JLabel("Apply");
 		lblApply.setBounds(360, 41, 35, 14);
-		frame.getContentPane().add(lblApply);
+		frmMainWindow.getContentPane().add(lblApply);
 
 		lblTo = new JLabel("To");
 		lblTo.setBounds(1133, 41, 19, 14);
-		frame.getContentPane().add(lblTo);
+		frmMainWindow.getContentPane().add(lblTo);
 
 		btnImportAxioms = new JButton("Import Axioms");
 		btnImportAxioms.addActionListener(this);
 		btnImportAxioms.setBounds(10, 11, 124, 23);
-		frame.getContentPane().add(btnImportAxioms);
+		frmMainWindow.getContentPane().add(btnImportAxioms);
 
 		btnImportDefinitions = new JButton("Import Definitions");
 		btnImportDefinitions.addActionListener(this);
 		btnImportDefinitions.setBounds(1343, 11, 141, 23);
-		frame.getContentPane().add(btnImportDefinitions);
+		frmMainWindow.getContentPane().add(btnImportDefinitions);
 
 		positionSelectorPane = new JPanel();
 
 		positionScrollPane = new JScrollPane(positionSelectorPane);
 		positionSelectorPane.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 		positionScrollPane.setBounds(10, 674, 1474, 60);
-		frame.getContentPane().add(positionScrollPane);
+		frmMainWindow.getContentPane().add(positionScrollPane);
 
 		JLabel lblAtPosition = new JLabel("At Position");
 		lblAtPosition.setBounds(712, 649, 71, 14);
-		frame.getContentPane().add(lblAtPosition);
+		frmMainWindow.getContentPane().add(lblAtPosition);
 
 		resultArea = new JTextPane();
 		resultArea.setEditable(false);
 		resultArea.setBounds(10, 777, 1474, 42);
-		frame.getContentPane().add(resultArea);
+		frmMainWindow.getContentPane().add(resultArea);
 		SimpleAttributeSet attribs = new SimpleAttributeSet();
 		StyleConstants.setAlignment(attribs, StyleConstants.ALIGN_CENTER);
 		StyleConstants.setFontSize(attribs, 22);
@@ -161,69 +175,74 @@ public class MainWindow implements ActionListener, ListSelectionListener {
 
 		JLabel lblResult = new JLabel("Result");
 		lblResult.setBounds(723, 745, 46, 14);
-		frame.getContentPane().add(lblResult);
+		frmMainWindow.getContentPane().add(lblResult);
 
 		addTheorem = new JButton("Add To List");
 		addTheorem.addActionListener(this);
 		addTheorem.setBounds(1343, 745, 141, 23);
-		frame.getContentPane().add(addTheorem);
+		frmMainWindow.getContentPane().add(addTheorem);
 
 		toggleDebugBtn = new JButton("Toggle Debug Mode");
 		toggleDebugBtn.addActionListener(this);
 		toggleDebugBtn.setBounds(10, 745, 150, 23);
-		frame.getContentPane().add(toggleDebugBtn);
+		frmMainWindow.getContentPane().add(toggleDebugBtn);
 
 		btnLoadState = new JButton("Load State");
 		btnLoadState.addActionListener(this);
 		btnLoadState.setBounds(641, 11, 105, 23);
-		frame.getContentPane().add(btnLoadState);
+		frmMainWindow.getContentPane().add(btnLoadState);
 
 		btnSaveState = new JButton("Save State");
 		btnSaveState.addActionListener(this);
 		btnSaveState.setBounds(749, 11, 105, 23);
-		frame.getContentPane().add(btnSaveState);
+		frmMainWindow.getContentPane().add(btnSaveState);
 
 		lblAddNewStatement = new JLabel("Add New Statement");
 		lblAddNewStatement.setBounds(686, 839, 124, 14);
-		frame.getContentPane().add(lblAddNewStatement);
+		frmMainWindow.getContentPane().add(lblAddNewStatement);
 
 		btnAsAxiom = new JButton("As Axiom");
 		btnAsAxiom.addActionListener(this);
 		btnAsAxiom.setBounds(641, 917, 105, 23);
-		frame.getContentPane().add(btnAsAxiom);
+		frmMainWindow.getContentPane().add(btnAsAxiom);
 
 		btnAsDefinition = new JButton("As Definition");
 		btnAsDefinition.addActionListener(this);
 		btnAsDefinition.setBounds(749, 917, 116, 23);
-		frame.getContentPane().add(btnAsDefinition);
+		frmMainWindow.getContentPane().add(btnAsDefinition);
 
 		btnReset = new JButton("Reset");
 		btnReset.addActionListener(this);
 		btnReset.setBounds(328, 11, 89, 23);
-		frame.getContentPane().add(btnReset);
+		frmMainWindow.getContentPane().add(btnReset);
 
 		btnImportPunctuation = new JButton("Import Punctuation");
 		btnImportPunctuation.addActionListener(this);
 		btnImportPunctuation.setBounds(1070, 11, 150, 23);
-		frame.getContentPane().add(btnImportPunctuation);
+		frmMainWindow.getContentPane().add(btnImportPunctuation);
 
 		btnPlayWithSelected = new JButton("Play With Selected Axioms");
 		btnPlayWithSelected.addActionListener(this);
-		btnPlayWithSelected.setBounds(112, 640, 206, 23);
-		frame.getContentPane().add(btnPlayWithSelected);
+		btnPlayWithSelected.setBounds(10, 640, 206, 23);
+		frmMainWindow.getContentPane().add(btnPlayWithSelected);
 		
 		btnRemoveSelectedStatement = new JButton("Remove Selected Statement");
 		btnRemoveSelectedStatement.addActionListener(this);
-		btnRemoveSelectedStatement.setBounds(446, 640, 198, 23);
-		frame.getContentPane().add(btnRemoveSelectedStatement);
+		btnRemoveSelectedStatement.setBounds(226, 640, 198, 23);
+		frmMainWindow.getContentPane().add(btnRemoveSelectedStatement);
 		
 		JScrollPane scrollPane_1 = new JScrollPane();
 		scrollPane_1.setBounds(10, 864, 1474, 44);
-		frame.getContentPane().add(scrollPane_1);
+		frmMainWindow.getContentPane().add(scrollPane_1);
 		
-				manualStmt = new JTextPane();
-				scrollPane_1.setViewportView(manualStmt);
-				manualStmt.setParagraphAttributes(attribs, true);
+		manualStmt = new JTextPane();
+		scrollPane_1.setViewportView(manualStmt);
+				
+		btnAddImportantResult = new JButton("Add To Important Results");
+		btnAddImportantResult.addActionListener(this);
+		btnAddImportantResult.setBounds(434, 640, 206, 23);
+		frmMainWindow.getContentPane().add(btnAddImportantResult);
+		manualStmt.setParagraphAttributes(attribs, true);
 	}
 
 	public void importAxioms(String filname) {
@@ -252,13 +271,15 @@ public class MainWindow implements ActionListener, ListSelectionListener {
 
 		positionSelectorPane.doLayout();
 		positionSelectorPane.repaint();
+		
+		this.importantResultsWindow.refreshStatements();
 	}
 
 	public void breakDownToSelection() {
 		Statement toStatement = (Statement) this.toList.getSelectedValue();
-		Statement applyStatement = (Statement) this.applyList.getSelectedValue();
+		Statement applyStatement = this.getSelectedApplyStatement();
 
-		if (toStatement == null)
+		if (toStatement == null || applyStatement == null)
 			return;
 
 		positionSelectorPane.removeAll();
@@ -282,7 +303,7 @@ public class MainWindow implements ActionListener, ListSelectionListener {
 	}
 
 	public void enableApplyButtons() {
-		Statement st1 = (Statement) this.applyList.getSelectedValue();
+		Statement st1 = this.getSelectedApplyStatement();
 		Statement st2 = (Statement) this.toList.getSelectedValue();
 
 		if (st1 == null || st2 == null)
@@ -320,6 +341,15 @@ public class MainWindow implements ActionListener, ListSelectionListener {
 	public void exportState(String filname) {
 		this.as.exportState(filname);
 	}
+	
+	public Statement getSelectedApplyStatement() {
+		Statement s1 = (Statement) this.applyList.getSelectedValue();
+		Statement s2 = (Statement) this.importantResultsWindow.StatementsList.getSelectedValue();
+		
+		if(s1 != null) return s1;
+		
+		return s2;
+	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
@@ -345,7 +375,7 @@ public class MainWindow implements ActionListener, ListSelectionListener {
 			applyButton bt = (applyButton) e.getSource();
 			int index = bt.index;
 
-			Statement st1 = (Statement) this.applyList.getSelectedValue();
+			Statement st1 = this.getSelectedApplyStatement();
 			Statement st2 = (Statement) this.toList.getSelectedValue();
 
 			this.resultingStatement = st1.applyTo(st2, index);
@@ -422,9 +452,25 @@ public class MainWindow implements ActionListener, ListSelectionListener {
 		
 		if (e.getSource() == this.btnRemoveSelectedStatement) {
 			Statement selectedStatement = (Statement) this.applyList.getSelectedValue();
-			this.as.axioms.remove(selectedStatement);
-			this.as.definitions.remove(selectedStatement);
-			this.as.theorems.remove(selectedStatement);
+			
+			this.as.removeAxiom(selectedStatement);
+			this.as.removeDefinition(selectedStatement);
+			this.as.removeTheorem(selectedStatement);
+			this.as.removeImportantResult(selectedStatement);
+			
+			this.refreshStatements();
+		}
+		
+		if(e.getSource() == this.btnAddImportantResult) {
+			Statement selectedStatement = (Statement) this.applyList.getSelectedValue();
+			
+			if(selectedStatement!=null) this.as.addImportantResult(selectedStatement);
+			
+			this.importantResultsWindow.refreshStatements();
+		}
+		
+		if(e.getSource() == this.importantResultsWindow.btnRemoveStatement) {
+			this.as.removeImportantResult((Statement) this.importantResultsWindow.StatementsList.getSelectedValue());
 			
 			this.refreshStatements();
 		}
@@ -432,13 +478,21 @@ public class MainWindow implements ActionListener, ListSelectionListener {
 
 	@Override
 	public void valueChanged(ListSelectionEvent e) {
-		if (e.getSource() == this.toList && !e.getValueIsAdjusting()) {
+		if ((e.getSource() == this.toList || (e.getSource() == this.applyList) || (e.getSource() == this.importantResultsWindow.StatementsList)) && !e.getValueIsAdjusting()) {
 			this.breakDownToSelection();
-		} else if (e.getSource() == this.applyList && !e.getValueIsAdjusting()) {
 			this.enableApplyButtons();
+
+			this.positionScrollPane.doLayout();
+			this.positionScrollPane.repaint();
 		}
-		this.positionScrollPane.doLayout();
-		this.positionScrollPane.repaint();
+		
+		if(e.getSource() == this.applyList) {
+			this.importantResultsWindow.StatementsList.clearSelection();
+		}
+		
+		if(e.getSource() == this.importantResultsWindow.StatementsList) {
+			this.applyList.clearSelection();
+		}
 	}
 
 	class MainWindowRunHelper implements Runnable {
@@ -453,10 +507,61 @@ public class MainWindow implements ActionListener, ListSelectionListener {
 		public void run() {
 			try {
 				MainWindow window = new MainWindow(stmts, punct);
-				window.frame.setVisible(true);
+				window.frmMainWindow.setVisible(true);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
+	}
+
+	@Override
+	public void windowGainedFocus(WindowEvent e) {
+		this.importantResultsWindow.setVisible(true);
+	}
+
+	@Override
+	public void windowLostFocus(WindowEvent e) {
+		this.importantResultsWindow.setVisible(false);
+	}
+
+	@Override
+	public void windowActivated(WindowEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void windowClosed(WindowEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void windowClosing(WindowEvent arg0) {
+		this.importantResultsWindow.setVisible(false);
+	}
+
+	@Override
+	public void windowDeactivated(WindowEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void windowDeiconified(WindowEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void windowIconified(WindowEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void windowOpened(WindowEvent arg0) {
+		// TODO Auto-generated method stub
+		
 	}
 }
