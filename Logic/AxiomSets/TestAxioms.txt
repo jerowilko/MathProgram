@@ -1,0 +1,10 @@
+Bit Seperator: '
+Collection Openers: {[
+Collection Closers: }]
+Variable Opener: <@
+Variable Closer: @>
+
+'{'r'['{'imp'['<@x@>','<@y@>']'}','{'r'['<@x@>','<@y@>']'}']'}'
+'{'imp'['a','b']'}'
+'{'imp'['b','c']'}'
+'{'and'['{'imp'['<@a@>','<@b@>']'}','{'imp'['<@b@>','<@c@>']'}']'}'
