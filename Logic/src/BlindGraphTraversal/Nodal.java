@@ -1,4 +1,4 @@
-package BlindGraph;
+package BlindGraphTraversal;
 
 import java.util.ArrayList;
 
