@@ -4,6 +4,11 @@ import java.util.ArrayList;
 
 public class AcyclicPath extends Path {
 
+	public AcyclicPath() {
+		this.nodeList = new ArrayList<Nodal>();
+		this.edgeList = new ArrayList<Edgey>();
+	}
+	
 	public AcyclicPath(Nodal startNode) {
 		super(startNode);
 	}

@@ -3,12 +3,11 @@ Collection Openers: {[<
 Collection Closers: }]>
 Variable Opener: <@
 Variable Closer: @>
-Replacement Function Bit: r
+Replacement Function Bit: :=
 Replacement Function Opener: [
 Replacement Function Seperator: ,
 Replacement Function Closer: ]
 Axioms:
-'<'r'['<':='['<@x@>','<@y@>']'>','<'r'['<@x@>','<@y@>']'>']'>'
 '<':='['<':='['<@x@>','<@y@>']'>','<':='['<@y@>','<@x@>']'>']'>'
 '<':='['<'{'<@X@>','<@Y@>'}'['T']'>','<@X@>']'>'
 '<':='['<'{'<@X@>','<@Y@>'}'['F']'>','<@Y@>']'>'
@@ -23,6 +22,6 @@ Definitions:
 '<':='['and','{'i','f'}']'>'
 '<':='['or','{'t','i'}']'>'
 '<':='['eq','{'i','n'}']'>'
+'<':='['{'F','T'}','n']'>'
 Theorems:
 Important Results:
-'<'r'['<':='['<@x@>','<@y@>']'>','<'r'['<@x@>','<@y@>']'>']'>'

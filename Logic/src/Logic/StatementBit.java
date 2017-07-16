@@ -16,4 +16,8 @@ public class StatementBit {
 		return this instanceof Variable;
 	}
 	
+	public boolean literalEquals(StatementBit bit) {
+		return this.literalValue.equals(bit.literalValue);
+	}
+	
 }

@@ -13,6 +13,7 @@ import java.util.ArrayList;
 
 public class AxiomSystem {
 
+	public static boolean suppressErrors = false;
 	public ArrayList<Statement> axioms = new ArrayList<Statement>();
 	public ArrayList<Statement> definitions = new ArrayList<Statement>();
 	public ArrayList<Statement> theorems = new ArrayList<Statement>();
@@ -83,6 +84,24 @@ public class AxiomSystem {
 		allStatements.addAll(this.theorems);
 		
 		return allStatements;
+	}
+	
+	public ArrayList<Statement> getAllApplyableStatements() {
+		ArrayList<Statement> statements = new ArrayList<Statement>();
+		
+		for(int i = 0;i<this.axioms.size();i++) {
+			if(this.axioms.get(i).isReplacementStatement()) {
+				statements.add(this.axioms.get(i));
+			}
+		}
+		
+		for(int i = 0;i<this.definitions.size();i++) {
+			if(this.definitions.get(i).isReplacementStatement()) {
+				statements.add(this.definitions.get(i));
+			}
+		}
+		
+		return statements;
 	}
 	
 	public String toString() {

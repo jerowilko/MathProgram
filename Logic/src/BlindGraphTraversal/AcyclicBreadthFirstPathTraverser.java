@@ -8,6 +8,7 @@ public class AcyclicBreadthFirstPathTraverser extends BreadthFirstPathTraverser 
 		this.startPath = new AcyclicPath(startNode);
 		
 		this.edges.clear();
+		
 		this.edges.addAll(this.startPath.getEdges());
 	}
 
