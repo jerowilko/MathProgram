@@ -3,12 +3,18 @@ package BlindGraphTraversal;
 import java.util.ArrayList;
 
 public class Path implements Nodal {
-	private ArrayList<Nodal> nodeList;
-	private ArrayList<Edgey> edgeList;
+	protected ArrayList<Nodal> nodeList;
+	protected ArrayList<Edgey> edgeList;
 	
 	public Path() {
 		this.nodeList = new ArrayList<Nodal>();
 		this.edgeList = new ArrayList<Edgey>();
+	}
+	
+	public Path(Nodal startNode) {
+		this();
+		
+		this.nodeList.add(startNode);
 	}
 	
 	public Path(Path path) {
@@ -17,7 +23,9 @@ public class Path implements Nodal {
 	}
 
 	public Nodal getLastNode() {
-		return this.nodeList.get(this.nodeList.size());
+		if(this.nodeList.size()==0) return null;
+		
+		return this.nodeList.get(this.nodeList.size()-1);
 	}
 	
 	@Override
@@ -47,6 +55,18 @@ public class Path implements Nodal {
 		nextPath.edgeList.add(nextEdge);
 		
 		return nextPath;
+	}
+	
+	public String toString() {
+		String str = "Path: ";
+		
+		for(int i=0;i<this.nodeList.size();i++) {
+			if(i!=0) str += ", ";
+			str += this.nodeList.get(i);
+		}
+		str += ". Total cost: " + this.getCost() + ".";
+		
+		return str;
 	}
 
 }
