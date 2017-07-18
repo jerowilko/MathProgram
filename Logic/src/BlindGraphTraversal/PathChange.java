@@ -2,6 +2,8 @@ package BlindGraphTraversal;
 
 import java.util.ArrayList;
 
+import ProofSystem.ProofStatement;
+
 public class PathChange extends Edgey {
 
 	Edgey nextEdge;
@@ -36,5 +38,4 @@ public class PathChange extends Edgey {
 		
 		return changes;
 	}
-	
 }

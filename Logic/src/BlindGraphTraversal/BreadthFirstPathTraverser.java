@@ -31,4 +31,12 @@ public class BreadthFirstPathTraverser {
 		
 		return nextPath;
 	}
+	
+	public int getNumEdges() {
+		return this.edges.size();
+	}
+	
+	public PriorityQueue<Edgey> getEdges() {
+		return this.edges;
+	}
 }

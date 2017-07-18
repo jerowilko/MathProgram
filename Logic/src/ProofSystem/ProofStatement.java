@@ -12,13 +12,16 @@ import Logic.Statement;
 public class ProofStatement implements Nodal {
 
 	public static Map<String, Boolean> visitedStatements = new HashMap<String, Boolean>();
-	
+
 	private AxiomSystem as;
 	private Statement statement;
+	
+	private WeightingAssigner weighter;
 
-	public ProofStatement(AxiomSystem as, Statement statement) {
+	public ProofStatement(AxiomSystem as, WeightingAssigner was, Statement statement) {
 		this.as = as;
 		this.statement = statement;
+		this.weighter = was;
 	}
 
 	@Override
@@ -32,17 +35,16 @@ public class ProofStatement implements Nodal {
 				ArrayList<Integer> positions = st.getApplicableIndices(this.statement);
 
 				for (int n = 0; n < positions.size(); n++) {
-					StatementApplication stmt = new StatementApplication(this, st, positions.get(n));
+					StatementApplication stmt = new StatementApplication(this, st, this.weighter, positions.get(n));
 					Statement st2 = ((ProofStatement) stmt.getEndNode()).getStatement();
-					
-					if(!(ProofStatement.visitedStatements.containsKey(st2.toString()))) {
+
+					if (!(ProofStatement.visitedStatements.containsKey(st2.toString()))) {
 						statementChanges.add(stmt);
-						ProofStatement.visitedStatements.put(st2.toString(), true);
 					}
-					else System.out.println("Found duplicate");
 				}
-			} catch(Exception e) {
-				if(!AxiomSystem.suppressErrors) System.out.println("Error occured when getting indices for applying " + st + " to " + this );
+			} catch (Exception e) {
+				if (!AxiomSystem.suppressErrors)
+					System.out.println("Error occured when getting indices for applying " + st + " to " + this);
 			}
 		}
 
@@ -52,7 +54,7 @@ public class ProofStatement implements Nodal {
 	public Nodal apply(Statement appliedStatement, int applicationPosition) {
 		Statement resultingStatement = appliedStatement.applyTo(this.statement, applicationPosition);
 
-		ProofStatement resultingProof = new ProofStatement(as, resultingStatement);
+		ProofStatement resultingProof = new ProofStatement(as, this.weighter, resultingStatement);
 
 		return resultingProof;
 	}
@@ -64,5 +66,5 @@ public class ProofStatement implements Nodal {
 	public Statement getStatement() {
 		return this.statement;
 	}
-	
+
 }

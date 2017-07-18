@@ -9,16 +9,18 @@ public class StatementApplication extends Edgey {
 	ProofStatement initialStatement;
 	Statement appliedStatement;
 	int applicationPosition;
+	WeightingAssigner weighter;
 
-	public StatementApplication(ProofStatement initialStatement, Statement appliedStatement, int applicationPosition) {
+	public StatementApplication(ProofStatement initialStatement, Statement appliedStatement, WeightingAssigner was, int applicationPosition) {
 		this.initialStatement = initialStatement;
 		this.appliedStatement = appliedStatement;
 		this.applicationPosition = applicationPosition;
+		this.weighter = was;
 	}
 
 	@Override
 	public int getCost() {
-		return 1;
+		return weighter.assignWeighting(this);
 	}
 
 	@Override

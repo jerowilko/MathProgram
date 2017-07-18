@@ -5,13 +5,14 @@ import ProofSystem.ProofStatement;
 public class AcyclicShortestPathSearcher {
 
 	HaltingCondition haltCondition;
+	private AcyclicBreadthFirstPathTraverser traverser;
 	
 	public AcyclicShortestPathSearcher(HaltingCondition halt) {
 		this.haltCondition = halt;
 	}
 	
 	public AcyclicPath findPathFrom(Nodal startNode) {
-		AcyclicBreadthFirstPathTraverser traverser = new AcyclicBreadthFirstPathTraverser(startNode);
+		traverser = new AcyclicBreadthFirstPathTraverser(startNode);
 		
 		Path nextPath;
 		
@@ -22,13 +23,16 @@ public class AcyclicShortestPathSearcher {
 		
 			if(nextPath.getCost()!=prevCost) {
 				prevCost = nextPath.getCost();
-				System.out.println(prevCost);
 			}
 			
 			ProofStatement.visitedStatements.put(((ProofStatement) nextPath.getLastNode()).getStatement().toString(), true);
 		}
 		
 		return (AcyclicPath) nextPath;
+	}
+	
+	public int getNumEdges() {
+		return this.traverser.getNumEdges();
 	}
 
 }

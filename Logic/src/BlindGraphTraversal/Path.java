@@ -28,6 +28,12 @@ public class Path implements Nodal {
 		return this.nodeList.get(this.nodeList.size()-1);
 	}
 	
+	public Nodal getFirstNode() {
+		if(this.nodeList.size()==0) return null;
+		
+		return this.nodeList.get(0);
+	}
+	
 	@Override
 	public ArrayList<Edgey> getEdges() {
 		if(this.nodeList.isEmpty()) return new ArrayList<Edgey>();
@@ -67,6 +73,14 @@ public class Path implements Nodal {
 		str += ". Total cost: " + this.getCost() + ".";
 		
 		return str;
+	}
+	
+	public ArrayList<Nodal> getNodeList() {
+		return this.nodeList;
+	}
+	
+	public ArrayList<Edgey> getEdgeList() {
+		return this.edgeList;
 	}
 
 }
